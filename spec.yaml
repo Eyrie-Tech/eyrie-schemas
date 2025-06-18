@@ -1,0 +1,96 @@
+openapi: 3.0.0
+info:
+  title: Eyrie - Job Service
+  description: |-
+    This is the official Eyrie Job service
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: apiteam@eyrie.app
+  license:
+    name: Apache 2.0
+    url: http://www.eyrie.app/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://api.eyrie.app
+paths:
+  /job:
+    post:
+      summary: Create a job
+      description: Create a job to be executed on the Eyrie platform
+      operationId: createJob
+      requestBody:
+        description: Create a new Eyrie job
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Job"
+        required: true
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "400":
+          description: Invalid input
+        "422":
+          description: Validation exception
+      security:
+        - job_service_auth:
+            - write:job
+    get:
+      summary: Get a job
+      description: Get a job
+      operationId: getJob
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "400":
+          description: Invalid input
+        "422":
+          description: Validation exception
+      security:
+        - job_service_auth:
+            - read:job
+components:
+  schemas:
+    Job:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        executionId:
+          type: string
+          example: a7yx55921acb
+        name:
+          type: string
+          example: Job Name
+        status:
+          type: string
+          description: Job Status
+          example: COMPLETED
+          enum:
+            - CREATED
+            - IN_PROGRESS
+            - FAILED
+            - COMPLETED
+  securitySchemes:
+    job_service_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://eyrie.app/oauth/authorize
+          scopes:
+            write:job: Create jobs
+            read:job: Get jobs
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
