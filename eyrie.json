@@ -771,7 +771,7 @@
     "Paths": {
       "type": "object",
       "patternProperties": {
-        "^(?!.*\\{[^}]*\\})(?!.*/\\w+s(/|$)).*$": {
+        "^/.*": {
           "$ref": "#/definitions/PathItem"
         },
         "^x-": {}
